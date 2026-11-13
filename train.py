@@ -19,3 +19,17 @@ features = [
 ]
 
 df_clean = df[features + ["koi_disposition"]].dropna() #keine NaN Werte
+X = df_clean[features] # die bekannten daten zum lernen
+y = df_clean["koi_disposition"] # das was man vorhersagen möchte, Einordnung in Confirmed oder False positive
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train) # training
+
+predictions = model.predict(X_test) # Übergabe der Testdate, ohne Lösung
+print(f"Acurracy: {accuracy_score(y_test, predictions):.2%}\n") # Vergleich der Testdaten mit den Vorhersagen des modells
+print(classification_report(y_test, predictions)) # die Leistung für beide Klassen wird aufgeteilt in Genauigkeit und Trefferquote
+
+joblib.dump(model, "exoplanet_model.pkl")
+print("Model saved.")
